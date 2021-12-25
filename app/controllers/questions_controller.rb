@@ -3,6 +3,8 @@ class QuestionsController < ApplicationController
   helper_method :answer
   helper_method :answers
 
+  before_action :authenticate_user!, except: [:index, :show]
+
   def index
     @questions = Question.all
   end
