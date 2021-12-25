@@ -2,6 +2,8 @@
 h1= question.title
 p= question.body
 
+p= link_to 'Delete', question, method: :delete
+
 = render 'shared/errors', resource: answer
 
 - question.answers.each do |answer|

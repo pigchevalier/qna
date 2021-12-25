@@ -14,12 +14,21 @@ class QuestionsController < ApplicationController
   def new; end
 
   def create
-    @question = Question.new(questions_params)
+    @question = current_user.questions.build(questions_params)
 
     if @question.save
       redirect_to @question, notice: 'Your question successfully created'
     else
       render :new
+    end
+  end
+
+  def destroy
+    if question.user == current_user
+      question.destroy
+      redirect_to questions_path, notice: 'Your question successfully deleted'
+    else
+      redirect_to question, alert: "You are not author of this question"
     end
   end
 
