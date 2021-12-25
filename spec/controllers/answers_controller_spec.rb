@@ -7,7 +7,7 @@ RSpec.describe AnswersController, type: :controller do
     before { get :new, params: { question_id: question.id } }
 
     it 'renders new view' do
-      expect(response).to render_template :new
+      expect(response).to render_template "questions/show"
     end
   end
 
@@ -30,7 +30,7 @@ RSpec.describe AnswersController, type: :controller do
 
       it 're-renders new' do
         post :create, params: { answer: attributes_for(:answer, :invalid), question_id: question.id }
-        expect(response).to render_template :new
+        expect(response).to render_template "questions/show"
       end
     end
   end
