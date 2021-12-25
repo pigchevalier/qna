@@ -1,5 +1,7 @@
 class QuestionsController < ApplicationController
   helper_method :question
+  helper_method :answer
+  helper_method :answers
 
   def index
     @questions = Question.all
@@ -27,5 +29,13 @@ class QuestionsController < ApplicationController
 
   def questions_params
     params.require(:question).permit(:title, :body)
+  end
+
+  def answer
+    @answer ||= Answer.new
+  end
+
+  def answers
+    @answers ||= question.answers
   end
 end

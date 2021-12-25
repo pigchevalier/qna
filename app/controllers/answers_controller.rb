@@ -4,15 +4,17 @@ class AnswersController < ApplicationController
 
   def show; end
 
-  def new; end
+  def new
+    render 'questions/show', id: question
+  end
 
   def create
     @answer = question.answers.build(answers_params)
 
     if @answer.save
-      redirect_to @answer
+      redirect_to @answer, notice: 'Your answer successfully created'
     else
-      render :new
+      render 'questions/show', id: question
     end
   end
 
