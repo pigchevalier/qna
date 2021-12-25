@@ -2,6 +2,8 @@ class AnswersController < ApplicationController
   helper_method :answer
   helper_method :question
 
+  before_action :authenticate_user!, except: [:show]
+
   def show; end
 
   def new
