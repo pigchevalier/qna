@@ -1,9 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe AnswersController, type: :controller do
-  let!(:question) { create(:question) }
   let(:user) { create(:user) }
-
+  let!(:question) { create(:question, user: user) }
+  
   describe 'GET #new' do
     before { login(user) }
     before { get :new, params: { question_id: question.id } }
@@ -39,11 +39,25 @@ RSpec.describe AnswersController, type: :controller do
   end
 
   describe 'GET #show' do
-    let(:answer) { create(:answer, question: question) }
+    let(:answer) { create(:answer, question: question, user: user) }
     before { get :show, params: { id: answer } }
 
     it 'renders show view' do
       expect(response).to render_template :show
+    end
+  end
+
+  describe 'DELETE #destroy' do
+    before { login(user) }
+    let!(:answer) { create(:answer, question: question, user: user) }
+
+    it 'deletes the question' do
+      expect { delete :destroy, params: { id: answer} }.to change(Answer, :count).by(-1)
+    end
+
+    it 'redirects to question' do
+      delete :destroy, params: { id: answer}
+      expect(response).to redirect_to question
     end
   end
 end

@@ -5,7 +5,8 @@ feature 'User can browse questions', %q{
   As an user
   I'd like to be able to browse questions
 } do
-  given!(:questions) { create_list(:question, 5) }
+  given!(:user) { create(:user) }
+  given!(:questions) { create_list(:question, 5, user: user) }
 
   scenario 'browse questions' do    
     visit questions_path

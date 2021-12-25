@@ -14,7 +14,7 @@ RSpec.describe QuestionsController, type: :controller do
 
   describe 'POST #create' do
     before { login(user) }
-    
+
     context 'with valid attributes' do
       it 'save a new question in the db' do
         expect { post :create, params: { question: attributes_for(:question) } }.to change(Question, :count).by(1)
@@ -39,7 +39,7 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'GET #index' do
-    let (:questions) { create_list(:question, 5) }
+    let (:questions) { create_list(:question, 5, user: user) }
 
     before { get :index }
 
@@ -53,11 +53,25 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'GET #show' do
-    let(:question) { create(:question) }
+    let(:question) { create(:question, user: user) }
     before { get :show, params: { id: question } }
 
     it 'renders show view' do
       expect(response).to render_template :show
+    end
+  end
+
+  describe 'DELETE #destroy' do
+    before { login(user) }
+    let!(:question) { create(:question, user: user) }
+
+    it 'deletes the question' do
+      expect { delete :destroy, params: { id: question} }.to change(Question, :count).by(-1)
+    end
+
+    it 'redirects to index' do
+      delete :destroy, params: { id: question}
+      expect(response).to redirect_to questions_path
     end
   end
 end

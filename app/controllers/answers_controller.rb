@@ -12,11 +12,21 @@ class AnswersController < ApplicationController
 
   def create
     @answer = question.answers.build(answers_params)
+    @answer.user = current_user
 
     if @answer.save
       redirect_to @answer, notice: 'Your answer successfully created'
     else
       render 'questions/show', id: question
+    end
+  end
+
+  def destroy
+    if answer.user == current_user
+      answer.destroy
+      redirect_to answer.question, notice: 'Your answer successfully deleted'
+    else
+      redirect_to answer, alert: "You are not author of this answer"
     end
   end
 
