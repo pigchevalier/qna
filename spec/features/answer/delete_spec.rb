@@ -14,9 +14,11 @@ feature 'Author can delete answer', %q{
     scenario 'delete answer' do
       sign_in(answer.user)          
       visit question_path(id: answer.question)
+      expect(page).to have_content answer.body
       click_on 'Delete answer'
   
       expect(page).to have_content 'Your answer successfully deleted'
+      expect(page).to_not have_content answer.body
     end
   end
   describe 'Not athor of answer' do  

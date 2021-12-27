@@ -12,11 +12,15 @@ feature 'Author can delete question', %q{
 
   describe 'athor of question' do
     scenario 'delete question' do
-      sign_in(question.user)          
+      sign_in(question.user)
+      visit questions_path
+      expect(page).to have_content question.body          
       visit question_path(id: question)
+      
       click_on 'Delete question'
   
       expect(page).to have_content 'Your question successfully deleted'
+      expect(page).to_not have_content question.body
     end
   end
   describe 'Not athor of question' do  
