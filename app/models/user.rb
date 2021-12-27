@@ -6,7 +6,7 @@ class User < ApplicationRecord
   has_many :answers, dependent: :destroy
   has_many :questions, dependent: :destroy
 
-  def author_of?(current_user)
-    current_user.present? && self.id == current_user.id
+  def author_of?(object)
+    self.id == object.user.id
   end
 end

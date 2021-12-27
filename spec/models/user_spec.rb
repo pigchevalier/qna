@@ -6,13 +6,13 @@ RSpec.describe User, type: :model do
     it { should have_many(:questions).dependent(:destroy) }
   end
 
-  let(:user) { create(:user) }
   let(:user_not_athor) { create(:user, email: '2@2.com') }
+  let(:answer) { create(:answer) }
   it 'athor of' do
-    expect(user.author_of?(user)).to be(true)
+    expect(answer.user.author_of?(answer)).to be(true)
   end
 
   it 'not athor of' do
-    expect(user.author_of?(user_not_athor)).to be(false)
+    expect(user_not_athor.author_of?(answer)).to be(false)
   end
 end
