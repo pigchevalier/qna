@@ -5,9 +5,9 @@ feature 'User can look question and answers', %q{
   As an user
   I'd like to be able look question and answers
 } do
-  given!(:user) { create(:user) }
-  given!(:question) { create(:question, user: user) }
-  given!(:answers) { create_list(:answer, 5, question: question, user: user) }
+  
+  given!(:question) { create(:question) }
+  given!(:answers) { create_list(:answer, 5, question: question) }
 
   scenario 'browse questions' do    
     visit question_path(id: question)

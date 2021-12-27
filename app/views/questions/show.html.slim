@@ -2,14 +2,14 @@
 h1= question.title
 p= question.body
 
-p= link_to 'Delete', question, method: :delete
+- if question.user.author_of?(current_user)
+  p= link_to 'Delete question', question, method: :delete
 
 = render 'shared/errors', resource: answer
 
-- question.answers.each do |answer|
-  p= answer.body
+= render question.answers
 
-= form_with model: [question, answer], local: true do |f|
+= form_with model: [question, answer], url: {action: "create", controller: "answers", question_id: question.id}, method: :post, local: true do |f|
   = f.label :body
   = f.text_area :body
   = f.submit 'Create'

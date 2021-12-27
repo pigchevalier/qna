@@ -2,31 +2,26 @@ class AnswersController < ApplicationController
   helper_method :answer
   helper_method :question
 
-  before_action :authenticate_user!, except: [:show]
-
-  def show; end
-
-  def new
-    render 'questions/show', id: question
-  end
+  before_action :authenticate_user!
 
   def create
     @answer = question.answers.build(answers_params)
     @answer.user = current_user
 
     if @answer.save
-      redirect_to @answer, notice: 'Your answer successfully created'
+      redirect_to @answer.question, notice: 'Your answer successfully created'
     else
-      render 'questions/show', id: question
+      question
+      render 'questions/show'
     end
   end
 
   def destroy
-    if answer.user == current_user
+    if answer.user.author_of?(current_user)
       answer.destroy
       redirect_to answer.question, notice: 'Your answer successfully deleted'
     else
-      redirect_to answer, alert: "You are not author of this answer"
+      redirect_to answer.question, alert: "You are not author of this answer"
     end
   end
 
@@ -37,7 +32,7 @@ class AnswersController < ApplicationController
   end
 
   def question
-    @question ||= Question.find(params[:question_id])
+    @question = Question.find(params[:question_id])
   end 
 
   def answers_params

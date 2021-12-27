@@ -1,7 +1,4 @@
 h1 Questions
-- @questions.each do |question|
-    p.question= link_to question.title, question
-    p.question= question.body
-        
+= render @questions        
 
 p= link_to 'Create question', new_question_path

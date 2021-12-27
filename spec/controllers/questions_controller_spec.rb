@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe QuestionsController, type: :controller do
   let(:user) { create(:user) }
+  let(:user_not_author) { create(:user, email: '2@2.com') }
 
   describe 'GET #new' do
     before { login(user) }
@@ -62,16 +63,31 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'DELETE #destroy' do
-    before { login(user) }
-    let!(:question) { create(:question, user: user) }
-
-    it 'deletes the question' do
-      expect { delete :destroy, params: { id: question} }.to change(Question, :count).by(-1)
+    context 'Author' do
+      before { login(user) }
+      let!(:question) { create(:question, user: user) }
+  
+      it 'deletes the question' do
+        expect { delete :destroy, params: { id: question} }.to change(Question, :count).by(-1)
+      end
+  
+      it 'redirects to index' do
+        delete :destroy, params: { id: question}
+        expect(response).to redirect_to questions_path
+      end
     end
-
-    it 'redirects to index' do
-      delete :destroy, params: { id: question}
-      expect(response).to redirect_to questions_path
+    context 'Not author' do
+      before { login(user_not_author) }
+      let!(:question) { create(:question, user: user) }
+  
+      it 'not deletes the question' do
+        expect { delete :destroy, params: { id: question} }.to_not change(Question, :count)
+      end
+  
+      it 'redirects to show' do
+        delete :destroy, params: { id: question}
+        expect(response).to redirect_to question
+      end
     end
   end
 end
