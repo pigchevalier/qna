@@ -13,7 +13,6 @@ html
 
   body
     - if user_signed_in?
-      / я сделала кнопку так как ссылка почемуто посылала get запрос не смотря на указанный метод delete
       = button_to 'Log out', destroy_user_session_path, method: :delete
     - else
       = link_to 'Log in', new_user_session_path
