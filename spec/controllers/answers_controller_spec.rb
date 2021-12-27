@@ -2,16 +2,8 @@ require 'rails_helper'
 
 RSpec.describe AnswersController, type: :controller do
   let(:user) { create(:user) }
+  let(:user_not_author) { create(:user, email: '2@2.com') }
   let!(:question) { create(:question, user: user) }
-  
-  describe 'GET #new' do
-    before { login(user) }
-    before { get :new, params: { question_id: question.id } }
-
-    it 'renders new view' do
-      expect(response).to render_template "questions/show"
-    end
-  end
 
   describe 'POST #create' do
     before { login(user) }
@@ -22,7 +14,7 @@ RSpec.describe AnswersController, type: :controller do
 
       it 'redirect to show' do
         post :create, params: { answer: attributes_for(:answer), question_id: question.id }
-        expect(response).to redirect_to assigns(:answer)
+        expect(response).to redirect_to question
       end
     end
 
@@ -38,26 +30,29 @@ RSpec.describe AnswersController, type: :controller do
     end
   end
 
-  describe 'GET #show' do
-    let(:answer) { create(:answer, question: question, user: user) }
-    before { get :show, params: { id: answer } }
-
-    it 'renders show view' do
-      expect(response).to render_template :show
-    end
-  end
-
-  describe 'DELETE #destroy' do
-    before { login(user) }
+  describe 'DELETE #destroy' do 
     let!(:answer) { create(:answer, question: question, user: user) }
-
-    it 'deletes the question' do
-      expect { delete :destroy, params: { id: answer} }.to change(Answer, :count).by(-1)
+    context 'Author' do
+      before { login(user) }
+      it 'deletes the answer' do
+        expect { delete :destroy, params: { id: answer } }.to change(Answer, :count).by(-1)
+      end
+  
+      it 'redirects to question' do
+        delete :destroy, params: { id: answer }
+        expect(response).to redirect_to answer.question
+      end
     end
-
-    it 'redirects to question' do
-      delete :destroy, params: { id: answer}
-      expect(response).to redirect_to question
+    context 'Not author' do
+      before { login(user_not_author) }
+      it 'not deletes the answer' do
+        expect { delete :destroy, params: { id: answer } }.to_not change(Answer, :count)
+      end
+  
+      it 'redirects to question' do
+        delete :destroy, params: { id: answer }
+        expect(response).to redirect_to answer.question
+      end
     end
   end
 end

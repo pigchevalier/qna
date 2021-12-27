@@ -18,7 +18,7 @@ feature 'User can sign in', %q{
     visit new_user_session_path
     fill_in 'Email', with: '1@1.com'
     fill_in 'Password', with: '111111'
-    click_on 'Log in'
+    click_button
 
     expect(page).to have_content 'Invalid Email or password'
   end

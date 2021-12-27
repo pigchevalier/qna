@@ -6,33 +6,25 @@ feature 'Author can delete question', %q{
   I'd like to be able to delete question
 } do
 
-  given(:user) { create(:user) }
   given(:user_not_author) { create(:user, email: '2@2.com') }
   
-  given(:question) { create(:question, user: user) }
+  given(:question) { create(:question) }
 
-  describe 'Authenticated user' do
-    scenario 'is athor of question, delete question' do
-      sign_in(user)
+  describe 'athor of question' do
+    scenario 'delete question' do
+      sign_in(question.user)          
       visit question_path(id: question)
-      click_on 'Delete'
+      click_on 'Delete question'
   
       expect(page).to have_content 'Your question successfully deleted'
     end
-    
-    scenario 'is not athor of question, tries to delete question' do
-      sign_in(user_not_author)
-      visit question_path(id: question)
-      click_on 'Delete'
-  
-      expect(page).to have_content "You are not author of this question"
-    end
   end
+  describe 'Not athor of question' do  
+    scenario 'tries to delete question' do
+      sign_in(user_not_author)          
+      visit question_path(id: question)
 
-  scenario "Unauthenticated user tries to delete an question" do
-    visit question_path(id: question)
-    click_on 'Delete'
-
-    expect(page).to have_content "You need to sign in or sign up before continuing."
+      expect(page).to_not have_content "Delete question"
+    end
   end
 end

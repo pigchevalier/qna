@@ -1,0 +1,23 @@
+doctype html
+html
+  head
+    title Qna
+    meta name="viewport" content="width=device-width,initial-scale=1"
+    = csrf_meta_tags 
+    = csp_meta_tag
+    
+    = stylesheet_link_tag "application", "data-turbo-track": "reload"
+
+    = javascript_importmap_tags 
+    = javascript_include_tag "application", "data-turbo-track": "reload", defer: true
+
+  body
+    - if user_signed_in?
+      / я сделала кнопку так как ссылка почемуто посылала get запрос не смотря на указанный метод delete
+      = button_to 'Log out', destroy_user_session_path, method: :delete
+    - else
+      = link_to 'Log in', new_user_session_path
+
+    p.notice = notice
+    p.alert = alert
+    == yield
